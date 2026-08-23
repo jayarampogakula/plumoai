@@ -492,16 +492,16 @@ volumes:
 # ------------------- Secrets -------------------
 secrets:
   mysql_db:
-    file: ./secrets/mysql_db.txt
+    environment: "MYSQL_DB"
   mysql_user:
-    file: ./secrets/mysql_user.txt
+    environment: "MYSQL_USER"
   mysql_password:
-    file: ./secrets/mysql_password.txt
+    environment: "MYSQL_PASSWORD"
   mysql_root_password:
-    file: ./secrets/mysql_root_password.txt
+    environment: "MYSQL_ROOT_PASSWORD"
   mongo_db:
-    file: ./secrets/mongo_db.txt
+    environment: "MONGO_DB"
   mongo_user:
-    file: ./secrets/mongo_user.txt
+    environment: "MONGO_USER"
   mongo_password:
-    file: ./secrets/mongo_password.txt
+    environment: "MONGO_PASSWORD"

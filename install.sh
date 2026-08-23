@@ -354,24 +354,34 @@ echo -n "plumoai_user" > secrets/mysql_user.txt
 echo -n "plumoai_mongo" > secrets/mongo_db.txt
 echo -n "plumoai_mongo_user" > secrets/mongo_user.txt
 
+set_env_key MYSQL_DB "authdb_prod"
+set_env_key MYSQL_USER "plumoai_user"
+set_env_key MONGO_DB "plumoai_mongo"
+set_env_key MONGO_USER "plumoai_mongo_user"
+
 if [ ! -f secrets/mysql_password.txt ]; then
   openssl rand -base64 32 | tr -d '\n' > secrets/mysql_password.txt
   echo "  Created new mysql_password"
 else
   echo "  Keeping existing mysql_password"
 fi
+set_env_key MYSQL_PASSWORD "$(cat secrets/mysql_password.txt)"
+
 if [ ! -f secrets/mysql_root_password.txt ]; then
   openssl rand -base64 32 | tr -d '\n' > secrets/mysql_root_password.txt
   echo "  Created new mysql_root_password"
 else
   echo "  Keeping existing mysql_root_password"
 fi
+set_env_key MYSQL_ROOT_PASSWORD "$(cat secrets/mysql_root_password.txt)"
+
 if [ ! -f secrets/mongo_password.txt ]; then
   openssl rand -base64 32 | tr -d '\n' > secrets/mongo_password.txt
   echo "  Created new mongo_password"
 else
   echo "  Keeping existing mongo_password"
 fi
+set_env_key MONGO_PASSWORD "$(cat secrets/mongo_password.txt)"
 
 chmod 600 secrets/* 2>/dev/null || true
 [ -f scripts/mongo-secrets-entrypoint.sh ] && chmod +x scripts/mongo-secrets-entrypoint.sh

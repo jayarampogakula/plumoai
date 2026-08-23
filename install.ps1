@@ -294,11 +294,16 @@ New-Item -ItemType Directory -Force -Path "secrets" | Out-Null
 "plumoai_mongo" | Out-File -FilePath "secrets/mongo_db.txt" -Encoding ascii -NoNewline
 "plumoai_mongo_user" | Out-File -FilePath "secrets/mongo_user.txt" -Encoding ascii -NoNewline
 
+Set-EnvValue $ENV_FILE "MYSQL_DB" "authdb_prod"
+Set-EnvValue $ENV_FILE "MYSQL_USER" "plumoai_user"
+Set-EnvValue $ENV_FILE "MONGO_DB" "plumoai_mongo"
+Set-EnvValue $ENV_FILE "MONGO_USER" "plumoai_mongo_user"
+
 # Random passwords (only if missing)
 $secrets = @(
-    @{ File = "mysql_password.txt"; Name = "mysql_password" },
-    @{ File = "mysql_root_password.txt"; Name = "mysql_root_password" },
-    @{ File = "mongo_password.txt"; Name = "mongo_password" }
+    @{ File = "mysql_password.txt"; Name = "mysql_password"; Key = "MYSQL_PASSWORD" },
+    @{ File = "mysql_root_password.txt"; Name = "mysql_root_password"; Key = "MYSQL_ROOT_PASSWORD" },
+    @{ File = "mongo_password.txt"; Name = "mongo_password"; Key = "MONGO_PASSWORD" }
 )
 foreach ($s in $secrets) {
     $path = Join-Path "secrets" $s.File
@@ -308,6 +313,8 @@ foreach ($s in $secrets) {
     } else {
         Write-Host "  Keeping existing $($s.Name)"
     }
+    $val = (Get-Content $path -Raw).Trim()
+    Set-EnvValue $ENV_FILE $s.Key $val
 }
 
 # Docker bind-mounts .sh from Windows with CRLF: dash sees "set -e^M" -> "set: Illegal option -". Force LF.
