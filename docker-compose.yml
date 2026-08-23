@@ -30,9 +30,9 @@ services:
       - "--certificatesresolvers.mytlschallenge.acme.tlschallenge=true"
       - "--certificatesresolvers.mytlschallenge.acme.email=${SSL_EMAIL}"
       - "--certificatesresolvers.mytlschallenge.acme.storage=/letsencrypt/acme.json"
-    ports:
-      - "0.0.0.0:${HTTP_PORT:-8080}:80"
-      - "0.0.0.0:${HTTPS_PORT:-8443}:443"
+    expose:
+      - "80"
+      - "443"
     volumes:
       - traefik_data:/letsencrypt
       - /var/run/docker.sock:/var/run/docker.sock:ro
