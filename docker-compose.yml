@@ -296,8 +296,6 @@ services:
     image: mysql:8.0
     container_name: plumoai-mysql
     restart: unless-stopped
-    # /bin/sh + path avoids broken shebang when bind-mounted files have Windows CRLF ("no such file or directory")
-    entrypoint: ["/bin/sh", "/scripts/mysql-root-secrets-entrypoint.sh"]
     healthcheck:
       # Verify authenticated readiness instead of treating "access denied" as healthy.
       # On Windows / WSL and slow disks, first boot can still take several minutes.
@@ -318,7 +316,6 @@ services:
       MYSQL_ROOT_HOST: "%"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./scripts/mysql-root-secrets-entrypoint.sh:/scripts/mysql-root-secrets-entrypoint.sh:ro
       - ./init-privileges.sql:/docker-entrypoint-initdb.d/01-init-privileges.sql:ro
     networks:
       - internal
@@ -349,14 +346,11 @@ services:
     # 512M cap starves the cache (only ~256MB), causing heavy I/O and slow
     # serverStatus/health-check responses. Raise to 1G to match MySQL.
     command: ["--wiredTigerCacheSizeGB", "0.5"]
-    entrypoint: ["/bin/sh", "/scripts/mongo-secrets-entrypoint.sh"]
     environment:
       MONGO_INITDB_DATABASE: ${MONGO_DB:-plumoai_mongo}
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-plumoai_mongo_user}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-plumoai_mongo_password_change_me}
     volumes:
-      - ./scripts/mongo-secrets-entrypoint.sh:/scripts/mongo-secrets-entrypoint.sh:ro
-      - ./scripts/init-mongo-user.sh:/docker-entrypoint-initdb.d/init-mongo-user.sh:ro
       - mongo_data:/data/db
     networks:
       - internal
