@@ -6,9 +6,6 @@ __pycache__/
 ## Local environment
 .env
 
-## Generated secrets (created by installers)
-secrets/
-
 ## Local storage (default local uploads path)
 storage/
 
