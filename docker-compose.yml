@@ -214,7 +214,7 @@ services:
     restart: unless-stopped
     ports:
       # Host access: http://localhost:3010/api/v1/... (maps to container port 3010)
-      - "3010:3010"
+      - "${PUBLIC_API_PORT:-3010}:3010"
     environment:
       PORT: "3010"
       AUTH_API_BASE_URL: ${AUTH_API_BASE_URL:-http://auth:3000}
